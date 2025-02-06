@@ -27,7 +27,7 @@ df_population = st.session_state.df_population
 if "client_data" not in st.session_state:
     st.session_state.client_data = None
 
-client_id = st.text_input("Entrez l'ID du client", min_value=0, max_value=999999, value=210611)
+client_id = st.number_input("Entrez l'ID du client", min_value=0, max_value=999999, value=210611)
 
 if client_id:
     if st.button("Récupérer les données du client") or st.session_state.client_data:
