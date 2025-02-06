@@ -1,0 +1,70 @@
+import streamlit as st
+import requests
+import numpy as np
+import shap
+import matplotlib.pyplot as plt
+
+#Création de la page de features importances
+st.title("Importance de vos données")
+
+# URL des APIs
+url_gi = "https://6equal.pythonanywhere.com/importance-globale"
+url_locale = "https://6equal.pythonanywhere.com/importance-locale"
+
+# Chargement des valeurs globales
+if st.button("Charger les valeurs Globales"):
+    response = requests.get(url_gi)
+
+    if response.status_code == 200:
+        data = response.json()
+        feature_names = np.array(data["columns"])
+        shap_values = np.array(data["shap_values"])
+
+        if shap_values.shape[0] == len(feature_names):
+            explainer = shap.Explanation(
+                values=shap_values,
+                base_values=0,
+                feature_names=feature_names
+            )
+
+            st.subheader("Importance Globale des variables")
+            fig, ax = plt.subplots()
+            shap.plots.bar(explainer, show=False)
+            st.pyplot(fig)
+        else:
+            st.error("Erreur dans les dimensions des SHAP values.")
+    else:
+        st.error("Erreur lors de la récupération des données depuis l'API.")
+
+# Entrée utilisateur pour l'ID du client
+st.subheader("Importance de vos variables spécifiques spécifique")
+client_id = st.number_input("Veuillez renseigner l'ID client", min_value=0, max_value=999999, value=210611)
+
+# Chargement des SHAP locales
+if st.button("Charger les valeurs du client") and client_id:
+    response = requests.get(f"{url_locale}/{client_id}")
+
+    if response.status_code == 200:
+        data = response.json()
+
+        feature_names = np.array(data["columns"])
+        shap_values = np.array(data["shap_values"])
+        client_features = np.array(data["client_features"])
+        base_value = data["base_value"]
+
+        if shap_values.shape[0] == len(feature_names):
+            explainer = shap.Explanation(
+                values=shap_values,
+                base_values=base_value,
+                data=client_features,
+                feature_names=feature_names
+            )
+
+            st.subheader(f"Importance des Features pour le client {client_id}")
+            fig, ax = plt.subplots()
+            shap.plots.waterfall(explainer, show=False)
+            st.pyplot(fig)
+        else:
+            st.error("Erreur dans les dimensions.")
+    else:
+        st.error("Erreur lors de la récupération des données locales.")
