@@ -25,8 +25,8 @@ if "updated_data" in st.session_state and st.session_state.updated_data:
     st.subheader("Modifier les valeurs")
 
     for feature, value in st.session_state.updated_data.items():
-        if isinstance(value, (int, float)):
-            st.session_state.updated_data[feature] = st.number_input(f"{feature}", value=float(value))
+        if isinstance(value, (int)):
+            st.session_state.updated_data[feature] = st.number_input(f"{feature}", value=int(value))
 
 if st.button("Mettre à jour et prédire"):
     update_payload = {
