@@ -2,43 +2,48 @@ import streamlit as st
 import requests
 import pandas as pd
 
-#Page pour la mise à jour des données et la nouvelle prédiction
 st.title("Mise à jour de vos données et nouvelle prédiction")
 
 API_URL = "https://6equal.pythonanywhere.com/client"
+FEATURES_URL = "https://6equal.pythonanywhere.com/features"
 
-client_id = st.text_input("Entrez l'ID du client actuel", "")
+client_id = st.number_input("Entrez l'ID du client pour l'ajouter ou pour modifier ses données", min_value=0, max_value=999999, value=210611)
 
 if client_id and st.button("Récupérer les données"):
-    response = requests.get(API_URL, params={"client_id": client_id})
+    r = requests.get(API_URL, params={"client_id": client_id})
+    if r.status_code == 200:
+        data = r.json()
+        df = pd.DataFrame([data["data"]])
+        st.session_state.df_client = df
+    elif r.status_code == 404:
+        feat = requests.get(FEATURES_URL)
+        if feat.status_code == 200:
+            features = feat.json().get("features", [])
+            df = pd.DataFrame([[0]*len(features)], columns=features)
+            df["SK_ID_CURR"] = int(client_id)
+            st.session_state.df_client = df
+        else:
+            st.error("Impossible de récupérer la liste des features.")
+    else:
+        st.error(f"Erreur : {r.status_code}")
+        st.error(r.text)
 
-    if response.status_code == 200:
-        client_data = response.json()
-        df_client = pd.DataFrame([client_data["data"]])
-
-        st.subheader(f"Vos données, client numéro : {client_id}")
-        st.dataframe(df_client)
-
-        st.session_state.updated_data = client_data["data"]
-
-if "updated_data" in st.session_state and st.session_state.updated_data:
-    st.subheader("Modifier les valeurs")
-    with st.container(height = 300):
-        for feature, value in st.session_state.updated_data.items():
-            if isinstance(value, (int)):
-                st.session_state.updated_data[feature] = st.number_input(f"{feature}", value=int(value))
+if "df_client" in st.session_state:
+    edited_df = st.data_editor(st.session_state.df_client, num_rows="fixed")
+    st.session_state.df_client = edited_df
 
 if st.button("Mettre à jour et prédire"):
-    update_payload = {
-        "client_id": int(client_id),
-        "data": st.session_state.updated_data
-    }
-
-    update_response = requests.post(API_URL, json=update_payload)
-
-    if update_response.status_code == 200:
-        st.success("Mise à jour réussie et nouvelle prédiction obtenue !")
-        prediction = update_response["prediction"]
-        st.write(f"Prédiction : {prediction}")
-    else:
-        st.error("Erreur lors de la mise à jour.")
+    if "df_client" in st.session_state:
+        df = st.session_state.df_client.copy()
+        for c in df.columns:
+            df[c] = df[c].astype(int, errors="ignore")
+        data_dict = df.iloc[0].to_dict()
+        payload = {"client_id": int(client_id), "data": data_dict}
+        res = requests.post(API_URL, json=payload)
+        if res.status_code == 200:
+            resp_json = res.json()
+            st.success("Mise à jour ou création effectuée.")
+            st.write(f"Prédiction : {resp_json.get('prediction', 'Aucune')}")
+        else:
+            st.error(f"Erreur : {res.status_code}")
+            st.error(res.text)
