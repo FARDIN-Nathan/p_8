@@ -35,6 +35,7 @@ if "df_client" in st.session_state:
 if st.button("Mettre à jour et prédire"):
     if "df_client" in st.session_state:
         df = st.session_state.df_client.copy()
+        df.fillna(0, inplace=True)
         for c in df.columns:
             df[c] = df[c].astype(int, errors="ignore")
         data_dict = df.iloc[0].to_dict()
