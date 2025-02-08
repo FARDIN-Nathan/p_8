@@ -14,9 +14,12 @@ if st.button("Obtenir la prédiction"):
     if response.status_code == 200:
         response = response.json()
         prediction = response["prediction"]
+        details = response["details"]
         probability_pay = response["probability"]["will_pay"]
 
-        st.write(f"Prédiction : {prediction}")
+        st.write(f"Prédiction : {prediction}, le statut du crédit est donc {details}")
+        st.write("grant_loan : crédit accordé")
+        st.write("do_not_grant_loan : crédit refusé")
         
         #Affichage d'une jauge
         fig = go.Figure(go.Indicator(

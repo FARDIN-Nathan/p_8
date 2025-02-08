@@ -42,9 +42,14 @@ if st.button("Mettre à jour et prédire"):
         payload = {"client_id": int(client_id), "data": data_dict}
         res = requests.post(API_URL, json=payload)
         if res.status_code == 200:
-            resp_json = res.json()
+            response = res.json()
+            prediction = response["prediction"]
+            details = response["details"]
             st.success("Mise à jour ou création effectuée.")
-            st.write(f"Prédiction : {resp_json.get('prediction', 'Aucune')}")
+            st.write(f"Prédiction : {prediction} le statut du crédit est donc {details}*")
+            st.write("grant_loan : crédit accordé")
+            st.write("do_not_grant_loan : crédit refusé")
+            
         else:
             st.error(f"Erreur : {res.status_code}")
             st.error(res.text)
