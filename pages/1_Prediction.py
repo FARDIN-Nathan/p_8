@@ -38,5 +38,7 @@ if st.button("Obtenir la prédiction"):
             }
         ))
         st.plotly_chart(fig)
+        st.caption("Graphique présentant le score de fiabilité du crédit, plus la valeur est proche de 100 plus vous êtes définis comme client ayant la capacité de rembourser")
+
     else:
         st.error("Erreur lors de la requête API.")

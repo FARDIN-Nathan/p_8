@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 #Création de la page de features importances
 st.title("Importance de vos données")
-plt.style.use("viridis")
+plt.style.use("seaborn-v0_8-colorblind")
 # URL des APIs
 url_gi = "https://6equal.pythonanywhere.com/importance-globale"
 url_locale = "https://6equal.pythonanywhere.com/importance-locale"
