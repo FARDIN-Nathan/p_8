@@ -8,7 +8,7 @@ API_URL = "https://6equal.pythonanywhere.com/client"
 FEATURES_URL = "https://6equal.pythonanywhere.com/features"
 
 client_id = st.number_input("Entrez l'ID du client pour l'ajouter ou pour modifier ses données", min_value=0, max_value=999999, value=210611)
-
+#Récuperation des données clients
 if client_id and st.button("Récupérer les données"):
     r = requests.get(API_URL, params={"client_id": client_id})
     if r.status_code == 200:
@@ -27,11 +27,11 @@ if client_id and st.button("Récupérer les données"):
     else:
         st.error(f"Erreur : {r.status_code}")
         st.error(r.text)
-
+#Sauvegarde des données
 if "df_client" in st.session_state:
     edited_df = st.data_editor(st.session_state.df_client, num_rows="fixed")
     st.session_state.df_client = edited_df
-
+#Nouvelle prediction à partir des données maj
 if st.button("Mettre à jour et prédire"):
     if "df_client" in st.session_state:
         df = st.session_state.df_client.copy()

@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 
 #Comparaison entre le client et l'ensemble des données
 st.title("Analyse entre vous et nos clients")
-
+plt.rcParams.update({'font.size': 14})
 API_URL = "https://6equal.pythonanywhere.com/client"
 POPULATION_URL = "https://6equal.pythonanywhere.com/population-data"
-
+sns.set_palette("colorblind")
 AVAILABLE_FEATURES = [
     "CNT_CHILDREN", "OBS_30_CNT_SOCIAL_CIRCLE", "EXT_SOURCE_1",
     "EXT_SOURCE_2", "EXT_SOURCE_3", "COUNT_FAM_MEMBERS", "PAYMENT_RATE"
@@ -28,7 +28,7 @@ if "client_data" not in st.session_state:
     st.session_state.client_data = None
 
 client_id = st.number_input("Entrez l'ID du client", min_value=0, max_value=999999, value=210611)
-
+# Récupération des valeurs clients
 if client_id:
     if st.button("Récupérer les données du client") or st.session_state.client_data:
         if st.session_state.client_data is None:
@@ -48,21 +48,21 @@ if client_id:
                 st.dataframe(df_client.style.format("{:.2f}"))
 
                 feature_name = st.selectbox("Choisissez une variable", AVAILABLE_FEATURES)
-
                 fig, ax = plt.subplots()
-                sns.histplot(df_population[feature_name], color='grey', kde=True)
+                sns.histplot(df_population[feature_name], kde=True)
 
                 # Calcul de la moyenne de la population
                 mean_value = df_population[feature_name].mean()
 
                 # Ajouter les lignes pour la moyenne et le client
-                ax.axvline(float(df_client[feature_name].values[0]), color="blue", linestyle='--', linewidth=2, label=f'Client {client_id}')
-                ax.axvline(float(mean_value), color="black", linestyle='--', linewidth=2, label='Moyenne de la population')
+                ax.axvline(float(df_client[feature_name].values[0]), linestyle="dotted", linewidth=2, label=f'Client {client_id}')
+                ax.axvline(float(mean_value), color="black", linestyle="dashdot", linewidth=2, label='Moyenne de la population')
 
                 ax.set(title=f'Comparaison avec la population pour {feature_name}', ylabel='')
                 plt.grid(axis='y')
                 plt.legend()
                 st.pyplot(fig)
+                st.caption("Graphique présentant vos données face à celles des autres clients")
 
                 st.subheader("Analyse de corrélation entre deux variables")
 
@@ -76,12 +76,13 @@ if client_id:
                     # Calcul de la matrice de corrélation
                     correlation_matrix = df_correlation.corr()
 
-                    # Afficher la heatmap
+                    # Affichage de la heatmap
                     fig, ax = plt.subplots(figsize=(5, 4))
-                    sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", center=0, fmt=".2f", linewidths=0.5, ax=ax)
+                    sns.heatmap(correlation_matrix, annot=True, cmap="cividis", center=0, fmt=".2f", linewidths=0.5, ax=ax)
 
                     ax.set_title(f"Corrélation entre {feature_name_1} et {feature_name_2}")
 
                     st.pyplot(fig)
+                    st.caption("Graphique présentant les relations entre les deux variables sélectionné")
                 else:
                     st.error("Les features sélectionnées ne sont pas disponibles dans les données.")

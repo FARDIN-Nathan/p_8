@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 
 #Création de la page de features importances
 st.title("Importance de vos données")
-
+plt.style.use("viridis")
 # URL des APIs
 url_gi = "https://6equal.pythonanywhere.com/importance-globale"
 url_locale = "https://6equal.pythonanywhere.com/importance-locale"
-
+plt.rcParams.update({'font.size': 14})
 # Chargement des valeurs globales
 if st.button("Charger les valeurs Globales"):
     response = requests.get(url_gi)
@@ -31,16 +31,17 @@ if st.button("Charger les valeurs Globales"):
             fig, ax = plt.subplots()
             shap.plots.bar(explainer, show=False)
             st.pyplot(fig)
+            st.caption("Graphique présentant les variables les plus influentes dans le choix du modèle")
         else:
             st.error("Erreur dans les dimensions des SHAP values.")
     else:
         st.error("Erreur lors de la récupération des données depuis l'API.")
 
-# Entrée utilisateur pour l'ID du client
+# Choix de l'id client
 st.subheader("Importance de vos variables spécifiques spécifique")
 client_id = st.number_input("Veuillez renseigner l'ID client", min_value=0, max_value=999999, value=210611)
 
-# Chargement des SHAP locales
+# Chargement des valeurs SHAP
 if st.button("Charger les valeurs du client") and client_id:
     response = requests.get(f"{url_locale}/{client_id}")
 
@@ -64,6 +65,7 @@ if st.button("Charger les valeurs du client") and client_id:
             fig, ax = plt.subplots()
             shap.plots.waterfall(explainer, show=False)
             st.pyplot(fig)
+            st.caption("Graphique présentant les variables les plus influentes pour votre prédiction")
         else:
             st.error("Erreur dans les dimensions.")
     else:
