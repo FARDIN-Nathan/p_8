@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 #Comparaison entre le client et l'ensemble des données
+st.set_page_config(page_title="Analyse entre vous et nos clients",page_icon="pad_banner.png")
 st.title("Analyse entre vous et nos clients")
 plt.rcParams.update({'font.size': 14})
 API_URL = "https://6equal.pythonanywhere.com/client"
@@ -44,7 +45,7 @@ if client_id:
             if df_population.empty:
                 st.error("Les données de population ne sont pas disponibles.")
             else:
-                st.subheader(f"Données du client {client_id}")
+                st.write(f"Données du client {client_id}")
                 st.dataframe(df_client.style.format("{:.2f}"))
 
                 feature_name = st.selectbox("Choisissez une variable", AVAILABLE_FEATURES)
@@ -64,7 +65,7 @@ if client_id:
                 st.pyplot(fig)
                 st.caption("Graphique présentant vos données face à celles des autres clients")
 
-                st.subheader("Analyse de corrélation entre deux variables")
+                st.write("Analyse de corrélation entre deux variables")
 
                 # Sélection des deux features à comparer
                 feature_name_1 = st.selectbox("Variable 1", AVAILABLE_FEATURES, index=0)

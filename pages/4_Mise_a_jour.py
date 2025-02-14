@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import pandas as pd
 
+#Page pour la mise à jour des données clients
+st.set_page_config(page_title="Mise à jour de vos données et nouvelle prédiction",page_icon="pad_banner.png")
 st.title("Mise à jour de vos données et nouvelle prédiction")
 
 API_URL = "https://6equal.pythonanywhere.com/client"
