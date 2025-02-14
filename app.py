@@ -1,6 +1,6 @@
 import streamlit as st
 #Configuration du fichier de gestion
-st.set_page_config(page_title="Prêt à dépenser", layout="wide")
+st.set_page_config(page_title="Prêt à dépenser", layout="wide",initial_sidebar_state="expanded",page_icon="pad_banner.png")
 
 st.title("Application de Prédiction de Capacité de Paiement")
 st.write("Utilisez le menu latéral pour naviguer entre les différentes pages de l'application.")
