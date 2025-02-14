@@ -3,8 +3,8 @@ import requests
 import plotly.graph_objects as go
 
 #Création de la page de prédiction et d'affichage
-st.set_page_config(page_title="Prédiction de capacité de paiement du client")
-st.title("Prédiction de capacité de paiement du client",page_icon="pad_banner.png")
+st.set_page_config(page_title="Prédiction de capacité de paiement du client",page_icon="pad_banner.png")
+st.title("Prédiction de capacité de paiement du client")
 
 user_id = st.number_input("Veuillez renseigner l'ID du client", min_value=0, max_value=999999, value=210611)
 url_api = f"https://6equal.pythonanywhere.com/predict/{user_id}"
