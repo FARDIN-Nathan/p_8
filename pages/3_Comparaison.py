@@ -55,7 +55,7 @@ if client_id:
                 # Calcul de la moyenne de la population
                 mean_value = df_population[feature_name].mean()
 
-                # Ajouter les lignes pour la moyenne et le client
+                # Ajout des lignes pour la moyenne et le client
                 ax.axvline(float(df_client[feature_name].values[0]), linestyle="dotted", linewidth=2, label=f'Client {client_id}')
                 ax.axvline(float(mean_value), color="black", linestyle="dashdot", linewidth=2, label='Moyenne de la population')
 

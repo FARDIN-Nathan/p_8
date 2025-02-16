@@ -48,9 +48,11 @@ if st.button("Mettre à jour et prédire"):
             prediction = response["prediction"]
             details = response["details"]
             st.success("Mise à jour ou création effectuée.")
-            st.write(f"Prédiction : {prediction} le statut du crédit est donc {details}*")
-            st.write("grant_loan : crédit accordé")
-            st.write("do_not_grant_loan : crédit refusé")
+            st.write(f"Prédiction : {prediction} le statut du crédit est donc {details}")
+            if prediction == 0:
+                st.write("grant_loan : crédit accordé")
+            else:
+                st.write("do_not_grant_loan : crédit refusé")
             
         else:
             st.error(f"Erreur : {res.status_code}")

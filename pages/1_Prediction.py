@@ -19,8 +19,10 @@ if st.button("Obtenir la prédiction"):
         probability_pay = response["probability"]["will_pay"]
 
         st.write(f"Prédiction : {prediction}, le statut du crédit est donc {details}")
-        st.write("grant_loan : crédit accordé")
-        st.write("do_not_grant_loan : crédit refusé")
+        if prediction == 0:
+            st.write("grant_loan : crédit accordé")
+        else:
+            st.write("do_not_grant_loan : crédit refusé")
         
         #Affichage d'une jauge
         fig = go.Figure(go.Indicator(
