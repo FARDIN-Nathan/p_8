@@ -39,7 +39,7 @@ if st.button("Charger les valeurs Globales"):
         st.error("Erreur lors de la récupération des données depuis l'API.")
 
 # Choix de l'id client
-st.write("Importance de vos variables spécifiques spécifique")
+st.write("Importance de vos variables spécifiques")
 client_id = st.number_input("Veuillez renseigner l'ID client", min_value=0, max_value=999999, value=210611)
 
 # Chargement des valeurs SHAP
