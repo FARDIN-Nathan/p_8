@@ -67,23 +67,30 @@ if client_id:
 
                 st.write("Analyse de corrélation entre deux variables")
 
-                # Sélection des deux features à comparer
+                # Sélection des features à comparer
                 feature_name_1 = st.selectbox("Variable 1", AVAILABLE_FEATURES, index=0)
                 feature_name_2 = st.selectbox("Variable 2", AVAILABLE_FEATURES, index=1)
-
+                #Création d'un hexbin plot
                 if feature_name_1 in df_population.columns and feature_name_2 in df_population.columns:
                     df_correlation = df_population[[feature_name_1, feature_name_2]].dropna()
-
-                    # Calcul de la matrice de corrélation
-                    correlation_matrix = df_correlation.corr()
-
-                    # Affichage de la heatmap
-                    fig, ax = plt.subplots(figsize=(5, 4))
-                    sns.heatmap(correlation_matrix, annot=True, cmap="cividis", center=0, fmt=".2f", linewidths=0.5, ax=ax)
-
-                    ax.set_title(f"Corrélation entre {feature_name_1} et {feature_name_2}")
-
+                
+                    fig, ax = plt.subplots(figsize=(12, 10))
+                    hb = ax.hexbin(
+                        x=df_correlation[feature_name_1],
+                        y=df_correlation[feature_name_2],
+                        gridsize=30,
+                        cmap='viridis',     
+                        mincnt=1            
+                    )
+                
+                    fig.colorbar(hb, ax=ax, label='Nombre de points')
+                
+                    ax.set_xlabel(feature_name_1)
+                    ax.set_ylabel(feature_name_2)
+                    ax.set_title(f"Hexbin plot de {feature_name_1} vs {feature_name_2}")
+                
                     st.pyplot(fig)
-                    st.caption("Graphique présentant les relations entre les deux variables sélectionné")
+                    st.caption("Graphique Hexbin présentant la densité de points entre les deux variables")
+                      
                 else:
                     st.error("Les features sélectionnées ne sont pas disponibles dans les données.")
