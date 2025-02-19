@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import pandas as pd
+import plotly.graph_objects as go
+
 
 #Page pour la mise à jour des données clients
 st.set_page_config(page_title="Mise à jour de vos données et nouvelle prédiction",page_icon="pad_banner.png")
@@ -47,12 +49,33 @@ if st.button("Mettre à jour et prédire"):
             response = res.json()
             prediction = response["prediction"]
             details = response["details"]
+            probability_pay = response["probability"]["will_pay"]
             st.success("Mise à jour ou création effectuée.")
             st.write(f"Prédiction : {prediction} le statut du crédit est donc {details}")
             if prediction == 0:
                 st.write("grant_loan : crédit accordé")
             else:
                 st.write("do_not_grant_loan : crédit refusé")
+                
+            #Affichage d'une jauge
+            fig = go.Figure(go.Indicator(
+                mode="gauge+number",
+                value= probability_pay * 100,
+                title={"text": "Score de fiabilité crédit (%)"},
+                gauge={
+                    "axis": {"range": [0, 100]},
+                    "bar": {"color": "blue"},
+                    "steps": [
+                        {"range": [0, 25], "color": "red"},
+                        {"range": [25, 50], "color": "orange"},
+                        {"range": [50, 75], "color": "yellow"},
+                        {"range": [75, 100], "color": "green"}
+                    ]
+                }
+            ))
+            st.plotly_chart(fig)
+            st.caption("Graphique présentant le score de fiabilité du crédit, plus la valeur est proche de 100 plus vous êtes définis comme client ayant la capacité de rembourser")
+
             
         else:
             st.error(f"Erreur : {res.status_code}")
